@@ -220,7 +220,7 @@ contract MultiSigWallet {
   notExecuted(transactionId)
   {
     if (isConfirmed(transactionId)) {
-      Transaction memory tx = transactions[transactionId];
+      Transaction storage tx = transactions[transactionId];
       tx.executed = true;
       bool success;
       (success,) = tx.destination.call.value(tx.value)(tx.data);

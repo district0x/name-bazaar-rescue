@@ -2,17 +2,17 @@
   "name": "name-bazaar-rescue",
   "version": "0.0.1",
   "requires": true,
-  "devDependencies": {
+  "dependencies": {
+    "@ensdomains/ens": "^0.3.5",
     "@ensdomains/root": "^0.0.3",
-    "@ensdomains/ens": "^0.3.4",
+    "@ensdomains/ethregistrar": "^1.2.2",
     "@ensdomains/test-utils": "^1.2.0",
     "bluebird": "^3.5.2",
     "eth-ens-namehash": "^2.0.8",
     "eth-gas-reporter": "^0.1.2",
     "js-sha3": "0.6.1",
     "solium": "^1.0.4",
-    "truffle": "^5.0.7",
-    "truffle-contract": "^4.0.14"
+    "truffle": "^5.0.7"
   },
   "scripts": {
     "test": "truffle test",

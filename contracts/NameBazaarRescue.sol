@@ -14,6 +14,9 @@ contract NameBazaarRescue is Ownable {
   OfferingRegistry public offeringRegistry;
   address public previousRegistrar;
 
+  event ReclaimSuccess(address offering, uint transactionId);
+  event ReclaimFailure(address offering, uint transactionId);
+
   constructor(address _root, address _offeringRegistry, address _previousRegistrar) public {
     require(_root != address(0));
     require(_offeringRegistry != address(0));
@@ -32,7 +35,15 @@ contract NameBazaarRescue is Ownable {
 
     for (uint i = 0; i < offerings.length; i++) {
       require(offeringRegistry.isOffering(offerings[i]));
-      emergencyMultisig.submitTransaction(offerings[i], 0, abi.encodeWithSignature("reclaimOwnership()"));
+      bool executed = false;
+      uint txId = emergencyMultisig.submitTransaction(offerings[i], 0, abi.encodeWithSignature("reclaimOwnership()"));
+      (,,,executed) = emergencyMultisig.transactions(txId);
+
+      if (executed) {
+        emit ReclaimSuccess(offerings[i], txId);
+      } else {
+        emit ReclaimFailure(offerings[i], txId);
+      }
     }
 
     root.setSubnodeOwner(ETH_LABEL, originalNodeOwner);
