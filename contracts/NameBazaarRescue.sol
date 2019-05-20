@@ -15,7 +15,6 @@ contract NameBazaarRescue is Ownable {
   address public previousRegistrar;
 
   event ReclaimSuccess(address offering, uint transactionId);
-  event ReclaimFailure(address offering, uint transactionId);
 
   constructor(address _root, address _offeringRegistry, address _previousRegistrar) public {
     require(_root != address(0));
@@ -42,7 +41,7 @@ contract NameBazaarRescue is Ownable {
       if (executed) {
         emit ReclaimSuccess(offerings[i], txId);
       } else {
-        emit ReclaimFailure(offerings[i], txId);
+        revert("reclaimOwnership transaction couldn't be executed");
       }
     }
 

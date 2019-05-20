@@ -33,7 +33,7 @@ async function expectFailure(call) {
 		// Assert ganache revert exception
 		assert.equal(
 			error.message,
-			'Returned error: VM Exception while processing transaction: revert'
+			'Returned error: VM Exception while processing transaction: revert reclaimOwnership transaction couldn\'t be executed -- Reason given: reclaimOwnership transaction couldn\'t be executed.'
 		);
 	}
 	if(tx !== undefined) {
@@ -192,19 +192,11 @@ contract('NameBazaarRescue', function(accounts) {
     });
 
     it('should fail to reclaim already reclaimed names', async () => {
-      await nameBazaarRescue.reclaimOwnerships([offering1.address, offering2.address]);
-      var events = await nameBazaarRescue.contract.getPastEvents("ReclaimFailure");
-      assert.equal(events.length, 2);
-      assert.equal(events[0].returnValues.offering, offering1.address);
-      assert.equal(events[1].returnValues.offering, offering2.address);
+      await expectFailure(nameBazaarRescue.reclaimOwnerships([offering1.address, offering2.address]));
     });
 
     it('should fail to reclaim from offering that has been already purchased', async () => {
-      await nameBazaarRescue.reclaimOwnerships([purchasedOffering.address]);
-      var events = await nameBazaarRescue.contract.getPastEvents("ReclaimFailure");
-      assert.equal(events.length, 1);
-      assert.equal(events[0].returnValues.offering, purchasedOffering.address);
-      assert.equal(await purchasedOffering.wasEmergencyCancelled(), false);
+      await expectFailure(nameBazaarRescue.reclaimOwnerships([purchasedOffering.address]));
     });
 
     it('should allow to run reclaim on offering that never had ENS name transferred into it', async () => {
@@ -216,10 +208,16 @@ contract('NameBazaarRescue', function(accounts) {
     });
 
     it('should allow to transfer registrar of names rescued from NameBazaar offerings', async () => {
-      hashRegistrar.transferRegistrars(sha3("name"), {from: registrantAccount});
-      hashRegistrar.transferRegistrars(sha3("name2"), {from: registrantAccount});
-      hashRegistrar.transferRegistrars(sha3("purchased-offering"), {from: buyerAccount});
-      hashRegistrar.transferRegistrars(sha3("not-transferred-name"), {from: registrantAccount});
+      await advanceTime(28 * DAYS); // Get out of Migration Lock Period
+      await hashRegistrar.transferRegistrars(sha3("name"), {from: registrantAccount});
+      await hashRegistrar.transferRegistrars(sha3("name2"), {from: registrantAccount});
+      await hashRegistrar.transferRegistrars(sha3("purchased-offering"), {from: buyerAccount});
+      await hashRegistrar.transferRegistrars(sha3("not-transferred-name"), {from: registrantAccount});
+
+      assert.equal(await baseRegistrar.ownerOf(sha3('name')), registrantAccount);
+      assert.equal(await baseRegistrar.ownerOf(sha3('name2')), registrantAccount);
+      assert.equal(await baseRegistrar.ownerOf(sha3('purchased-offering')), buyerAccount);
+      assert.equal(await baseRegistrar.ownerOf(sha3('not-transferred-name')), registrantAccount);
     });
   });
 });
