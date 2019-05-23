@@ -1,17 +1,18 @@
 module.exports = {
   networks: {
-    local: {
-      host: "localhost",
-      port: 9545,
-      network_id: "*",
-      gas: 4000000,
+    ganache: {
+      host: 'localhost',
+      port: 8549,
+      gas: 6e6,
+      gasPrice: 20e9,
+      network_id: '*'
     },
-    ropsten: {
-      host: "localhost",
+    parity: {
+      host: 'localhost',
       port: 8545,
-      network_id: "3",
-      from: "0xa303ddc620aa7d1390baccc8a495508b183fab59",
-      gas: 5000000,
+      gas: 6e6,
+      gasPrice: 6e9,
+      network_id: '*'
     }
   },
   mocha: {
