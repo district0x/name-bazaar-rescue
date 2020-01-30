@@ -3,7 +3,7 @@
   "version": "0.0.1",
   "requires": true,
   "dependencies": {
-    "@ensdomains/ens": "^0.3.5",
+    "@ensdomains/ens": "^0.4.0",
     "@ensdomains/root": "^0.0.3",
     "@ensdomains/ethregistrar": "^1.2.2",
     "@ensdomains/test-utils": "^1.2.0",
