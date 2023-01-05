@@ -3,9 +3,9 @@
   "version": "0.0.1",
   "requires": true,
   "dependencies": {
-    "@ensdomains/ens": "^0.3.5",
+    "@ensdomains/ens": "^0.6.2",
     "@ensdomains/root": "^0.0.3",
-    "@ensdomains/ethregistrar": "^1.2.2",
+    "@ensdomains/ethregistrar": "^2.0.5",
     "@ensdomains/test-utils": "^1.2.0",
     "bluebird": "^3.5.2",
     "eth-ens-namehash": "^2.0.8",
